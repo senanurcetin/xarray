@@ -1646,6 +1646,18 @@ class DataArray(
         """Return a new DataArray whose data is given by selecting indexes
         along the specified dimension(s).
 
+        .. warning::
+
+           Avoid chained indexing with ``isel`` when assigning values.
+           This may silently leave the original array unchanged::
+
+             da = xr.DataArray([0, 1, 2], dims=["x"])
+             da.isel(x=[0, 1])[0] = -1  # does not modify da
+
+           Instead, index the original array directly::
+
+             da[dict(x=0)] = -1
+
         Parameters
         ----------
         indexers : dict, optional
@@ -1759,15 +1771,15 @@ class DataArray(
 
         .. warning::
 
-          Do not try to assign values when using any of the indexing methods
-          ``isel`` or ``sel``::
+           Avoid chained indexing with ``sel`` when assigning values.
+           This may silently leave the original array unchanged::
 
-            da = xr.DataArray([0, 1, 2, 3], dims=["x"])
-            # DO NOT do this
-            da.isel(x=[0, 1, 2])[1] = -1
+             da = xr.DataArray([0, 1, 2], dims=["x"], coords={"x": [10, 11, 12]})
+             da.sel(x=[10, 11])[0] = -1  # does not modify da
 
-          Assigning values with the chained indexing using ``.sel`` or
-          ``.isel`` fails silently.
+           Instead, assign using ``.loc`` on the original array::
+
+             da.loc[dict(x=10)] = -1
 
         Parameters
         ----------
