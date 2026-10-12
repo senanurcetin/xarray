@@ -340,6 +340,27 @@ def test_range_index_repr_inline() -> None:
     assert actual == expected
 
 
+def test_range_index_datetime_repr() -> None:
+    # GH11598: numeric precision formatting does not support datetime64 bounds.
+    start = np.datetime64("2023-01-01", "ns")
+    step = np.timedelta64(1, "s")
+    index = RangeIndex.arange(start, start + 10 * step, step, dim="time")
+
+    expected_params = (
+        "start=2023-01-01T00:00:00.000000000, "
+        "stop=2023-01-01T00:00:10.000000000, step=1 seconds"
+    )
+    assert index._repr_inline_(max_width=70) == f"RangeIndex ({expected_params})"
+    assert repr(index) == (
+        f"RangeIndex ({expected_params}, size=10, coord_name='time', dim='time')"
+    )
+
+    data = xr.DataArray(
+        np.zeros(10), dims="time", coords=xr.Coordinates.from_xindex(index)
+    )
+    assert f"RangeIndex ({expected_params})" in repr(data)
+
+
 def test_range_index_equals_floating_point_tolerance() -> None:
     """Test that equals() handles floating point precision errors correctly.
 
