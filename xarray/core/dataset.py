@@ -2825,6 +2825,18 @@ class Dataset(
         method, except this method does not require knowing the order of
         each array's dimensions.
 
+        .. warning::
+
+           Avoid chained indexing with ``isel`` when assigning values.
+           This may silently leave the original dataset unchanged::
+
+             ds = xr.Dataset({"values": ("x", [0, 1, 2])})
+             ds.isel(x=[0, 1])["values"][0] = -1  # does not modify ds
+
+           Instead, index the original variable directly::
+
+             ds["values"][dict(x=0)] = -1
+
         Parameters
         ----------
         indexers : dict, optional
@@ -3030,6 +3042,21 @@ class Dataset(
         (e.g., '2000-01' to select all values in January 2000). It also means
         that slices are treated as inclusive of both the start and stop values,
         unlike normal Python indexing.
+
+        .. warning::
+
+           Avoid chained indexing with ``sel`` when assigning values.
+           This may silently leave the original dataset unchanged::
+
+             ds = xr.Dataset(
+                 {"values": ("x", [0, 1, 2])},
+                 coords={"x": [10, 11, 12]},
+             )
+             ds.sel(x=[10, 11])["values"][0] = -1  # does not modify ds
+
+           Instead, assign using ``.loc`` on the original variable::
+
+             ds["values"].loc[dict(x=10)] = -1
 
         Parameters
         ----------
