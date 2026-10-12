@@ -1740,6 +1740,15 @@ artist :
         xval = darray[xlab]
         yval = darray[ylab]
 
+        # Faceting can reduce a requested axis coordinate to a scalar.
+        # Reject it explicitly instead of indexing into its empty dims.
+        for axis, label, coord in (("x", xlab, xval), ("y", ylab, yval)):
+            if coord.ndim == 0:
+                raise ValueError(
+                    f"{axis} coordinate {label!r} is scalar; choose a coordinate "
+                    "that varies along a plotted dimension"
+                )
+
         if xval.ndim > 1 or yval.ndim > 1 or plotfunc.__name__ == "surface":
             # Passing 2d coordinate values, need to ensure they are transposed the same
             # way as darray.
