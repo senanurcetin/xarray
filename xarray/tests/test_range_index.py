@@ -348,7 +348,7 @@ def test_range_index_datetime_repr() -> None:
 
     expected_params = (
         "start=2023-01-01T00:00:00.000000000, "
-        "stop=2023-01-01T00:00:10.000000000, step=1 seconds"
+        f"stop=2023-01-01T00:00:10.000000000, step={index.step}"
     )
     assert index._repr_inline_(max_width=70) == f"RangeIndex ({expected_params})"
     assert repr(index) == (
