@@ -143,6 +143,30 @@ The arguments to these methods can be any objects that could index the array
 along the dimension given by the keyword, e.g., labels for an individual value,
 {py:class}`Python slice` objects or 1-dimensional arrays.
 
+### Selecting one label without dropping its dimension
+
+Selecting a single label as a scalar removes the indexed dimension. For
+example, selecting a single `space` label removes the `space` dimension:
+
+```{code-cell}
+da.sel(space="IL").dims
+```
+
+To **keep the dimension with length one**, pass the label in a list rather than
+as a scalar. This works with both `sel` and `loc`, and does not change the
+selected data:
+
+```{code-cell}
+da.sel(space=["IL"]).dims, da.sel(space=["IL"]).shape
+```
+
+```{code-cell}
+da.loc[dict(space=["IL"])].dims
+```
+
+The same distinction applies to positional indexing: `isel(space=1)` removes
+the dimension, while `isel(space=[1])` preserves it.
+
 ```{note}
 We would love to be able to do indexing with labeled dimension names inside
 brackets, but unfortunately, [Python does not yet support indexing with
