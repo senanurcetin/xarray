@@ -1786,6 +1786,34 @@ class Common2dMixin:
             self.plotmethod("x", "y", (12, 4))
 
 
+@requires_matplotlib
+@pytest.mark.parametrize(
+    ("x", "y", "expected"),
+    [
+        ("C", "B", "x coordinate 'C' is scalar"),
+        ("X", "B", "y coordinate 'B' is scalar"),
+    ],
+)
+def test_facetgrid_scalar_axis_coordinate_error(x, y, expected):
+    # Regression for GH7333: selecting a facet makes B and C scalar.
+    data = DataArray(
+        np.arange(2 * 2 * 2 * 4 * 5).reshape((2, 2, 2, 4, 5)),
+        coords={
+            "A": ["a1", "a2"],
+            "B": [0, 1],
+            "C": [0, 1],
+            "X": range(4),
+            "Y": range(5),
+        },
+    )
+    grid = data.sel(A="a1").plot.contour(col="B", row="C")
+
+    with pytest.raises(ValueError, match=expected):
+        grid.map_dataarray(xr.plot.pcolormesh, x=x, y=y)
+
+    plt.close("all")
+
+
 @pytest.mark.slow
 class TestContourf(Common2dMixin, PlotTestCase):
     plotfunc = staticmethod(xplt.contourf)
