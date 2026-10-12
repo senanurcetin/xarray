@@ -4,6 +4,7 @@ import warnings
 
 import numpy as np
 import pytest
+import xarray as xr
 from numpy.testing import assert_array_equal
 
 from xarray.core.nputils import NumpyVIndexAdapter, _is_contiguous, nanquantile
@@ -54,3 +55,25 @@ def test_nanquantile_other_runtime_warnings_not_suppressed(monkeypatch) -> None:
     monkeypatch.setattr(np, "nanquantile", warning_quantile)
     with pytest.warns(RuntimeWarning, match="unrelated quantile warning"):
         nanquantile(np.array([[1.0], [2.0]]), axis=0, q=0.5, method="median_unbiased")
+
+@pytest.mark.parametrize("kind", ["dataarray", "dataset"])
+def test_nanquantile_all_nan_public_quantile_does_not_warn(kind: str) -> None:
+    # Check that the NumPy fallback also works through the public APIs.
+    values = np.array([[np.nan, 1.0], [np.nan, 3.0]])
+    array = xr.DataArray(values, dims=("time", "station"), name="value")
+    obj = array if kind == "dataarray" else array.to_dataset()
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        result = obj.quantile(
+            0.5, dim="time", skipna=True, method="median_unbiased"
+        )
+
+    if kind == "dataset":
+        result = result["value"]
+    assert_array_equal(result.values, [np.nan, 2.0])
+    assert not any(
+        issubclass(w.category, RuntimeWarning)
+        and "All-NaN slice encountered" in str(w.message)
+        for w in caught
+    )
