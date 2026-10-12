@@ -347,6 +347,34 @@ def interp_na(
     if dim is None:
         raise NotImplementedError("dim is a required argument")
 
+    # Interpolators assume ascending coordinates. For strictly decreasing
+    # coordinates, reverse the data for interpolation and restore its order.
+    if use_coordinate is not False:
+        if use_coordinate is True:
+            coordinate_index = self.get_index(dim)
+        else:
+            coordinate = self.coords[use_coordinate]
+            # Let get_clean_interp_index raise the usual error for 2-D coordinates.
+            coordinate_index = coordinate.to_index() if coordinate.ndim == 1 else None
+
+        if (
+            coordinate_index is not None
+            and coordinate_index.is_monotonic_decreasing
+            and not coordinate_index.is_monotonic_increasing
+        ):
+            reversed_dim = {dim: slice(None, None, -1)}
+            result = interp_na(
+                self.isel(reversed_dim),
+                dim=dim,
+                use_coordinate=use_coordinate,
+                method=method,
+                limit=limit,
+                max_gap=max_gap,
+                keep_attrs=keep_attrs,
+                **kwargs,
+            )
+            return result.isel(reversed_dim)
+
     if limit is not None:
         valids = _get_valid_fill_mask(self, dim, limit)
 
