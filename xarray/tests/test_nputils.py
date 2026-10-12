@@ -56,6 +56,7 @@ def test_nanquantile_other_runtime_warnings_not_suppressed(monkeypatch) -> None:
     with pytest.warns(RuntimeWarning, match="unrelated quantile warning"):
         nanquantile(np.array([[1.0], [2.0]]), axis=0, q=0.5, method="median_unbiased")
 
+
 @pytest.mark.parametrize("kind", ["dataarray", "dataset"])
 def test_nanquantile_all_nan_public_quantile_does_not_warn(kind: str) -> None:
     # Check that the NumPy fallback also works through the public APIs.
