@@ -78,6 +78,10 @@ Deprecations
 
 Bug Fixes
 ~~~~~~~~~
+- :py:meth:`DataArray.interpolate_na` and :py:meth:`Dataset.interpolate_na`
+  now support monotonically decreasing coordinate indexes while preserving the
+  original coordinate order (:issue:`4637`).
+  By `Senanur Çetin <https://github.com/senanurcetin>`_.
 - Fix pickling of datasets opened from file-like objects with the scipy backend
   after opening more than one such dataset (:issue:`11323`, :pull:`11413`).
   By `C1-BA-B1-F3 <https://github.com/C1-BA-B1-F3>`_.
