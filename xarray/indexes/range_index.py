@@ -13,6 +13,14 @@ from xarray.core.indexing import IndexSelResult
 from xarray.core.variable import Variable
 
 
+
+def _format_range_value(value: Any) -> str:
+    """Format temporal bounds without applying numeric-only precision specifiers."""
+    if isinstance(value, (np.datetime64, np.timedelta64)):
+        return str(value)
+    return f"{value:.3g}"
+
+
 class RangeCoordinateTransform(CoordinateTransform):
     """1-dimensional coordinate transform representing a simple bounded interval
     with evenly spaced, floating-point values.
@@ -484,13 +492,17 @@ class RangeIndex(CoordinateTransformIndex):
     @override
     def _repr_inline_(self, max_width) -> str:
         params_fmt = (
-            f"start={self.start:.3g}, stop={self.stop:.3g}, step={self.step:.3g}"
+            f"start={_format_range_value(self.start)}, "
+            f"stop={_format_range_value(self.stop)}, "
+            f"step={_format_range_value(self.step)}"
         )
         return f"{self.__class__.__name__} ({params_fmt})"
 
     def __repr__(self) -> str:
         params_fmt = (
-            f"start={self.start:.3g}, stop={self.stop:.3g}, step={self.step:.3g}, "
+            f"start={_format_range_value(self.start)}, "
+            f"stop={_format_range_value(self.stop)}, "
+            f"step={_format_range_value(self.step)}, "
             f"size={self.size}, coord_name={self.coord_name!r}, dim={self.dim!r}"
         )
         return f"{self.__class__.__name__} ({params_fmt})"
