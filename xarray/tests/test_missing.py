@@ -206,6 +206,57 @@ def test_interpolate_unsorted_index_raises():
         expected.interpolate_na(dim="x", method="index")  # type: ignore[arg-type]
 
 
+@requires_scipy
+@pytest.mark.parametrize("method", ["linear", "cubic", "pchip"])
+@pytest.mark.parametrize("as_dataset", [False, True])
+def test_interpolate_na_decreasing_coordinate(method, as_dataset):
+    ascending = xr.DataArray(
+        [0.0, 2.0, np.nan, 3.0, 3.25],
+        dims="lat",
+        coords={"lat": [0, 1, 2, 3, 4]},
+        name="temperature",
+    )
+    descending = ascending.isel(lat=slice(None, None, -1))
+    if as_dataset:
+        ascending = ascending.to_dataset()
+        descending = descending.to_dataset()
+
+    expected = ascending.interpolate_na(dim="lat", method=method).isel(
+        lat=slice(None, None, -1)
+    )
+    actual = descending.interpolate_na(dim="lat", method=method)
+
+    assert_allclose(actual, expected)
+
+
+def test_interpolate_na_decreasing_auxiliary_coordinate():
+    data = xr.DataArray(
+        [0.0, 2.0, np.nan, 3.0, 3.25],
+        dims="lat",
+        coords={"lat": [0, 1, 2, 3, 4], "height": ("lat", [0, 10, 20, 30, 40])},
+    )
+    descending = data.isel(lat=slice(None, None, -1))
+    expected = data.interpolate_na(dim="lat", use_coordinate="height").isel(
+        lat=slice(None, None, -1)
+    )
+    actual = descending.interpolate_na(dim="lat", use_coordinate="height")
+
+    assert_allclose(actual, expected)
+
+
+@pytest.mark.parametrize(
+    "coords, message",
+    [
+        ([3, 1, 2], "must be monotonically increasing"),
+        ([3, 2, 2], "has duplicate values"),
+    ],
+)
+def test_interpolate_na_decreasing_rejects_invalid_indexes(coords, message):
+    data = xr.DataArray([1.0, np.nan, 3.0], dims="lat", coords={"lat": coords})
+    with pytest.raises(ValueError, match=message):
+        data.interpolate_na(dim="lat")
+
+
 def test_interpolate_no_dim_raises():
     da = xr.DataArray(np.array([1, 2, np.nan, 5], dtype=np.float64), dims="x")
     with pytest.raises(NotImplementedError, match=r"dim is a required argument"):
