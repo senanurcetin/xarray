@@ -255,6 +255,34 @@ xr.DataArray([1, 2, np.nan, 3]).mean()
 If desired, you can disable this behavior by invoking the aggregation method
 with `skipna=False`.
 
+To retain an aggregated dimension at length one, pass `keepdims=True` to a
+reduction such as {py:meth}`~xarray.DataArray.median` or
+{py:meth}`~xarray.Dataset.mean`. By default, the reduced dimension disappears:
+
+```{code-cell}
+measurements = xr.DataArray(
+    [[1, 3], [5, 7]],
+    dims=("time", "station"),
+    coords={
+        "time": ["day1", "day2"],
+        "station": ["north", "south"],
+        "calendar_day": ("time", [1, 2]),
+        "height": ("station", [100, 200]),
+    },
+)
+measurements.median(dim="time").dims
+```
+
+With `keepdims=True`, the dimension stays in the result, but coordinates that
+depend on that reduced dimension (here `time` and `calendar_day`) are removed;
+coordinates depending only on other dimensions are preserved:
+
+```{code-cell}
+kept = measurements.median(dim="time", keepdims=True)
+kept.sizes, list(kept.coords)
+```
+
+
 (compute.rolling)=
 
 ## Rolling window operations
