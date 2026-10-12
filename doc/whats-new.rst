@@ -78,6 +78,10 @@ Deprecations
 
 Bug Fixes
 ~~~~~~~~~
+- Raise an informative ``ValueError`` instead of ``IndexError`` when
+  a 2-D plot uses a scalar coordinate as the x or y axis, including in
+  :py:class:`~xarray.plot.FacetGrid` (:issue:`7333`).
+  By `Senanur Çetin <https://github.com/senanurcetin>`_.
 - Fix pickling of datasets opened from file-like objects with the scipy backend
   after opening more than one such dataset (:issue:`11323`, :pull:`11413`).
   By `C1-BA-B1-F3 <https://github.com/C1-BA-B1-F3>`_.
