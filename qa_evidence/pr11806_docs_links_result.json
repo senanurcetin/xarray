@@ -1,0 +1,88 @@
+{
+  "pr": 11806,
+  "head_sha": "d51b021f79918c50cde01b267dcceeaa07fc55cc",
+  "checked_at_utc": "2026-10-26T22:00:18.957225+00:00",
+  "checks": [
+    {
+      "name": "guide_http_200",
+      "passed": true,
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/internals/how-to-add-new-backend.html"
+    },
+    {
+      "name": "guide_section_anchor",
+      "passed": true
+    },
+    {
+      "name": "open_datatree_guide_link",
+      "passed": true,
+      "target": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_datatree.html#xarray.backends.BackendEntrypoint.open_datatree",
+      "count": 1
+    },
+    {
+      "name": "open_datatree_http_200",
+      "passed": true,
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_datatree.html"
+    },
+    {
+      "name": "open_datatree_fragment_present",
+      "passed": true,
+      "fragment": "xarray.backends.BackendEntrypoint.open_datatree"
+    },
+    {
+      "name": "open_groups_as_dict_guide_link",
+      "passed": true,
+      "target": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_groups_as_dict.html#xarray.backends.BackendEntrypoint.open_groups_as_dict",
+      "count": 1
+    },
+    {
+      "name": "open_groups_as_dict_http_200",
+      "passed": true,
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_groups_as_dict.html"
+    },
+    {
+      "name": "open_groups_as_dict_fragment_present",
+      "passed": true,
+      "fragment": "xarray.backends.BackendEntrypoint.open_groups_as_dict"
+    },
+    {
+      "name": "entrypoint_http_200",
+      "passed": true,
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.html"
+    },
+    {
+      "name": "entrypoint_docstring_backlink",
+      "passed": true,
+      "target": "https://xray--11806.org.readthedocs.build/en/11806/internals/how-to-add-new-backend.html#rst-open-datatree",
+      "count": 1
+    }
+  ],
+  "pages": [
+    {
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/internals/how-to-add-new-backend.html",
+      "status": 200,
+      "final_url": "https://xray--11806.org.readthedocs.build/en/11806/internals/how-to-add-new-backend.html",
+      "size": 120282
+    },
+    {
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_datatree.html",
+      "status": 200,
+      "final_url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_datatree.html",
+      "size": 22526
+    },
+    {
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_groups_as_dict.html",
+      "status": 200,
+      "final_url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.open_groups_as_dict.html",
+      "size": 23088
+    },
+    {
+      "url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.html",
+      "status": 200,
+      "final_url": "https://xray--11806.org.readthedocs.build/en/11806/generated/xarray.backends.BackendEntrypoint.html",
+      "size": 55266
+    }
+  ],
+  "passed": 10,
+  "failed": 0,
+  "all_passed": true
+}
