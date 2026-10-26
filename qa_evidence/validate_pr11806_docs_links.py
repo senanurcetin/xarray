@@ -4,6 +4,7 @@ Run: python validate_links.py
 Only reads public preview pages. Writes qa_result.json beside this script.
 No external Python dependencies.
 """
+
 from __future__ import annotations
 
 import json
@@ -47,7 +48,12 @@ def fetch(url: str) -> tuple[dict[str, object], LinksAndIds]:
         final_url = response.url
     html = LinksAndIds()
     html.feed(data.decode("utf-8"))
-    return {"url": url, "status": status, "final_url": final_url, "size": len(data)}, html
+    return {
+        "url": url,
+        "status": status,
+        "final_url": final_url,
+        "size": len(data),
+    }, html
 
 
 def main() -> int:
@@ -77,12 +83,19 @@ def main() -> int:
             for a in guide_html.links
             if urljoin(GUIDE, a["href"]) == desired
         ]
-        record(method + "_guide_link", len(matches) >= 1, target=desired, count=len(matches))
+        record(
+            method + "_guide_link",
+            len(matches) >= 1,
+            target=desired,
+            count=len(matches),
+        )
         target_url, fragment = urldefrag(desired)
         target_info, target_html = fetch(target_url)
         pages.append(target_info)
         record(method + "_http_200", target_info["status"] == 200, url=target_url)
-        record(method + "_fragment_present", fragment in target_html.ids, fragment=fragment)
+        record(
+            method + "_fragment_present", fragment in target_html.ids, fragment=fragment
+        )
 
     entrypoint_info, entrypoint_html = fetch(ENTRYPOINT)
     pages.append(entrypoint_info)
@@ -104,7 +117,9 @@ def main() -> int:
     results["failed"] = len(checks) - results["passed"]
     results["all_passed"] = results["failed"] == 0
     output = Path(__file__).with_name("qa_result.json")
-    output.write_text(json.dumps(results, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    output.write_text(
+        json.dumps(results, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     print(json.dumps(results, indent=2))
     return 0 if results["all_passed"] else 1
 
